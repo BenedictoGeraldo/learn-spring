@@ -1,9 +1,11 @@
 package benedicto.learnspring.controller;
 
+import benedicto.learnspring.dto.response.MobilResponseDto;
+import benedicto.learnspring.dto.request.MobilRequestDto;
 import benedicto.learnspring.service.MobilService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/mobilgeral")
@@ -14,9 +16,13 @@ public class MobilController {
         this.mobilService = mobilService;
     }
 
-    @GetMapping("/status")
-    public String getStatusMobil() {
-        return mobilService.jalankanMobil();
+    @GetMapping
+    public List<MobilResponseDto> getAllMobil() {
+        return mobilService.getAllMobil();
     }
 
+    @PostMapping
+    public MobilResponseDto tambahMobil(@RequestBody MobilRequestDto request) {
+        return mobilService.tambahMobil(request);
+    }
 }
