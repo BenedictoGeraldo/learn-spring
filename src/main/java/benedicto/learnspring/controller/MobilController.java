@@ -16,12 +16,12 @@ public class MobilController {
         this.mobilService = mobilService;
     }
 
-    @GetMapping
+    @GetMapping("/ghokghok")
     public List<MobilResponseDto> getAllMobil() {
         return mobilService.getAllMobil();
     }
 
-    @PostMapping
+    @PostMapping ("/ghokghok")
     public MobilResponseDto tambahMobil(@RequestBody MobilRequestDto request) {
         return mobilService.tambahMobil(request);
     }
