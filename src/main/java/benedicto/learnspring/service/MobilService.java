@@ -1,84 +1,76 @@
 package benedicto.learnspring.service;
 
 import benedicto.learnspring.dto.request.MobilPatchDto;
-import org.springframework.http.HttpStatus;
+import benedicto.learnspring.model.MobilModel;
+import benedicto.learnspring.repository.MobilRepository;
 import org.springframework.stereotype.Service;
 import benedicto.learnspring.dto.request.MobilRequestDto;
 import benedicto.learnspring.dto.response.MobilResponseDto;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class MobilService {
-    private final List<MobilResponseDto> daftarMobil = new ArrayList<>();
-    private final AtomicLong idCounter = new AtomicLong(1);
+    private final MobilRepository mobilRepository;
 
-    public MobilService() {
-        daftarMobil.add(new MobilResponseDto(idCounter.getAndIncrement(), "Toyota", "Avanza", "Siap jalan"));
+    public MobilService(MobilRepository mobilRepository) {
+        this.mobilRepository = mobilRepository;
     }
 
-    public List<MobilResponseDto> getAllMobil(){
-        return daftarMobil;
+    public List<MobilResponseDto> getAllMobil() {
+        return mobilRepository.findAll().stream().map(m -> new MobilResponseDto(
+                m.getId(),
+                m.getMerk(),
+                m.getTipe(),
+                m.getStatus()
+        )).toList();
     }
 
     public MobilResponseDto tambahMobil(MobilRequestDto request) {
-        MobilResponseDto response = new MobilResponseDto(
-                idCounter.getAndIncrement(),
+        MobilModel mobilBaru = new MobilModel(
                 request.merk(),
                 request.tipe(),
                 "Mobil berhasil mendaftar dan siap jalan"
         );
 
-        daftarMobil.add(response);
-        return response;
+        MobilModel saved = mobilRepository.save(mobilBaru);
+
+        return new MobilResponseDto(
+                saved.getId(),
+                saved.getMerk(),
+                saved.getTipe(),
+                saved.getStatus()
+        );
     }
 
-//    public MobilResponseDto updateMobil(Long id, MobilPatchDto request) {
-//        for (int i = 0; i < daftarMobil.size(); i++) {
-//            MobilResponseDto mobilLama = daftarMobil.get(i);
-//
-//            if (mobilLama.id().equals(id)) {
-//                MobilResponseDto mobilBaru = new MobilResponseDto (
-//                        id,
-//                        request.merk(),
-//                        request.tipe(),
-//                        "Data mobil berhasil diupdate (PUT)"
-//                );
-//
-//                daftarMobil.set(i, mobilBaru);
-//                return mobilBaru;
-//            }
-//        }
-//        return null;
-//    }
-
-    public MobilResponseDto patchMobil (Long id, MobilPatchDto request) {
-        for (int i = 0; i < daftarMobil.size(); i++) {
-            MobilResponseDto mobilLama = daftarMobil.get(i);
-            if (mobilLama.id().equals(id)) {
-                String merkBaru = (request.merk() != null && !request.merk().isBlank()) ? request.merk() : mobilLama.merk();
-                String tipeBaru = (request.tipe() != null && !request.tipe().isBlank()) ? request.tipe() : mobilLama.tipe();
-
-                MobilResponseDto mobilBaru = new MobilResponseDto(
-                        id,
-                        merkBaru,
-                        tipeBaru,
-                        "Data mobil berhasil diperbarui sebagian (Patch)"
-                );
-                daftarMobil.set(i, mobilBaru);
-                return mobilBaru;
+    public MobilResponseDto patchMobil(Long id, MobilPatchDto request) {
+        return mobilRepository.findById(id).map(mobil -> {
+            if (request.merk() != null && !request.merk().isBlank()) {
+                mobil.setMerk(request.merk());
             }
-        }
-        return null;
+            if (request.tipe() != null && !request.merk().isBlank()) {
+                mobil.setTipe(request.tipe());
+            }
+
+            mobil.setStatus("Data mobil berhasil diperbarui dengan method patch");
+
+            MobilModel updated = mobilRepository.save(mobil);
+
+            return new MobilResponseDto(
+                    updated.getId(),
+                    updated.getMerk(),
+                    updated.getTipe(),
+                    updated.getStatus()
+            );
+        }).orElse(null);
     }
 
-    public String deleteMobil (Long id) {
-        boolean terhapus = daftarMobil.removeIf(mobil -> mobil.id().equals(id));
-        if(terhapus) {
+    public String deleteMobil(Long id) {
+        if (mobilRepository.existsById(id)) {
+            mobilRepository.deleteById(id);
             return "Mobil dengan ID " + id + " berhasil dihapus";
         }
-        return "Mobil dengan ID" + id + " tidak ditemukan";
+
+        return "Mobil dengan ID" + id + " tidak ditemukan di db";
     }
 }
