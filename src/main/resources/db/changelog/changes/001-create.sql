@@ -14,7 +14,6 @@ CREATE TABLE IF NOT EXISTS jenis_kucing (
     id INT GENERATED ALWAYS AS IDENTITY,
     jenis VARCHAR(25) NOT NULL,
     deskripsi TEXT NOT NULL,
-    -- created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP (tambahkan sebagai alter column)
     CONSTRAINT pk_jenis_kucing PRIMARY KEY (id)
 );
 
