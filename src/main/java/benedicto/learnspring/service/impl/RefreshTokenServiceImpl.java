@@ -5,8 +5,7 @@ import benedicto.learnspring.model.UserModel;
 import benedicto.learnspring.repository.RefreshTokenRepository;
 import benedicto.learnspring.repository.UserRepository;
 import benedicto.learnspring.service.RefreshTokenService;
-import liquibase.license.User;
-import lombok.Value;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,7 +40,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService{
         RefreshTokenModel refreshToken = RefreshTokenModel.builder()
                 .user(user)
                 .token(UUID.randomUUID().toString())
-                .expiryByDate(Instant.now().plusMillis(refreshTokenExpirationMs))
+                .expiryDate(Instant.now().plusMillis(refreshTokenExpirationMs))
                 .build();
 
         return refreshTokenRepository.save(refreshToken);
