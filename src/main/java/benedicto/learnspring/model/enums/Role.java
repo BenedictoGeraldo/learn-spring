@@ -1,4 +1,6 @@
 package benedicto.learnspring.model.enums;
 
-public class Role {
+public enum Role {
+    ROLE_ADMIN,
+    ROLE_USER
 }
