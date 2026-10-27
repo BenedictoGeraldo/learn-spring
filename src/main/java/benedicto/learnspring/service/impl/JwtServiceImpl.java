@@ -25,13 +25,13 @@ public class JwtServiceImpl implements JwtService {
     private Long accessTokenExpirationMs;
 
     //1. Mengestrak username dari Access Token
-    public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
-    }
-
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
+    }
+
+    public String extractUsername(String token) {
+        return extractClaim(token, Claims::getSubject);
     }
 
     //2. Menghasilkan Access Token (aktif 15 menit)
