@@ -43,7 +43,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         //mendata endpoint public yang bebas diakses tanpa perlu login
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/v3/api/docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
 
                         //endpoint lain wajib membawa token
                         .anyRequest().authenticated()
