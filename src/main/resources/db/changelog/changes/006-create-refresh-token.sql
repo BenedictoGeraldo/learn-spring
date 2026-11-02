@@ -1,6 +1,6 @@
 --liquibase formatted sql
 
---changeset BenedictoGeraldo: 006-create-refresh-token.sql
+--changeset BenedictoGeraldo:006-create-refresh-token.sql
 
 CREATE TABLE IF NOT EXISTS refresh_token (
     id BIGINT GENERATED ALWAYS AS IDENTITY,
